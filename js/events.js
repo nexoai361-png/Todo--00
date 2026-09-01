@@ -50,6 +50,10 @@ export function initEvents() {
   document.getElementById('todoList').addEventListener('keydown', handleTodoListKeydown);
   document.getElementById('todoList').addEventListener('dblclick', handleTodoListDblClick);
 
+  document.getElementById('completedItems').addEventListener('click', handleTodoListClick);
+  document.getElementById('completedItems').addEventListener('keydown', handleTodoListKeydown);
+  document.getElementById('completedItems').addEventListener('dblclick', handleTodoListDblClick);
+
   initTouchHandlers();
   initContextMenu();
   initSearch();
