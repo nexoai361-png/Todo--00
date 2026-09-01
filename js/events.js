@@ -319,10 +319,11 @@ function initFilters() {
 
 function initClearCompleted() {
   document.getElementById('clearCompletedBtn').addEventListener('click', () => {
+    const doneCount = getTodos().filter((t) => t.completed).length;
     const snap = clearCompleted();
     if (!snap) return;
     render();
-    showToast(getTodos().length + ' cleared', () => {
+    showToast(doneCount + ' cleared', () => {
       restoreTodos(snap);
       render();
     });

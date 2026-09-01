@@ -134,6 +134,7 @@ export function render() {
   const f = getFilteredTodos();
   const stats = getStats();
   const searchQuery = getSearchQuery();
+  const filter = getCurrentFilter();
 
   counter.textContent = stats.active + ' active';
   document.getElementById('countAll').textContent = stats.total;
@@ -141,6 +142,10 @@ export function render() {
   document.getElementById('countDone').textContent = stats.done;
   document.getElementById('completedCount').textContent = stats.done;
   prog.style.width = (stats.total ? Math.round((stats.done / stats.total) * 100) : 0) + '%';
+
+  document.querySelectorAll('.filter-tab').forEach((t) => {
+    t.classList.toggle('active', t.dataset.filter === filter);
+  });
 
   const activeF = f.filter((t) => !t.completed);
   const doneF = f.filter((t) => t.completed);
@@ -154,30 +159,35 @@ export function render() {
     return;
   }
 
-  if (!activeF.length && !doneF.length) {
+  if (!f.length) {
     list.innerHTML = '';
     compSec.style.display = 'none';
     empty.classList.add('visible');
     empty.querySelector('.empty-state__text').textContent = searchQuery
       ? 'No matching tasks'
-      : 'No ' + getCurrentFilter() + ' tasks';
+      : 'No ' + filter + ' tasks';
     empty.querySelector('.empty-state__hint').textContent = '';
     return;
   }
 
   empty.classList.remove('visible');
   list.innerHTML = '';
-  activeF.forEach((t) => list.appendChild(createTodoItem(t)));
 
-  if (doneF.length) {
-    compSec.style.display = 'block';
-    compItems.innerHTML = '';
-    if (isExpandedExpanded()) {
-      doneF.forEach((t) => compItems.appendChild(createTodoItem(t)));
+  if (filter === 'all') {
+    activeF.forEach((t) => list.appendChild(createTodoItem(t)));
+    if (doneF.length) {
+      compSec.style.display = 'block';
+      compItems.innerHTML = '';
+      if (isExpandedExpanded()) {
+        doneF.forEach((t) => compItems.appendChild(createTodoItem(t)));
+      }
+      document.getElementById('completedSection').classList.toggle('expanded', isExpandedExpanded());
+    } else {
+      compSec.style.display = 'none';
     }
-    document.getElementById('completedSection').classList.toggle('expanded', isExpandedExpanded());
   } else {
     compSec.style.display = 'none';
+    f.forEach((t) => list.appendChild(createTodoItem(t)));
   }
 
   if (getEditingId()) {
